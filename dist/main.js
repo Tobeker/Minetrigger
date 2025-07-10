@@ -1,9 +1,27 @@
 "use strict";
 var _a;
-const gridSize = 8;
-const mineCount = 10;
+let gridSize = 8;
+let mineCount = 10;
 let grid = [];
 const boardElement = document.getElementById('board');
+const difficultySelect = document.getElementById('difficulty');
+difficultySelect === null || difficultySelect === void 0 ? void 0 : difficultySelect.addEventListener('change', () => {
+    switch (difficultySelect.value) {
+        case 'easy':
+            gridSize = 8;
+            mineCount = 10;
+            break;
+        case 'medium':
+            gridSize = 12;
+            mineCount = 25;
+            break;
+        case 'hard':
+            gridSize = 16;
+            mineCount = 40;
+            break;
+    }
+    init();
+});
 function init() {
     grid = [];
     boardElement.innerHTML = '';

@@ -1,5 +1,5 @@
-const gridSize = 8;
-const mineCount = 10;
+let gridSize = 8;
+let mineCount = 10;
 
 interface Cell {
   element: HTMLDivElement;
@@ -11,6 +11,25 @@ interface Cell {
 
 let grid: Cell[][] = [];
 const boardElement = document.getElementById('board') as HTMLDivElement;
+const difficultySelect = document.getElementById('difficulty') as HTMLSelectElement | null;
+
+difficultySelect?.addEventListener('change', () => {
+  switch (difficultySelect.value) {
+    case 'easy':
+      gridSize = 8;
+      mineCount = 10;
+      break;
+    case 'medium':
+      gridSize = 12;
+      mineCount = 25;
+      break;
+    case 'hard':
+      gridSize = 16;
+      mineCount = 40;
+      break;
+  }
+  init();
+});
 
 function init() {
   grid = [];
