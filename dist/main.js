@@ -5,6 +5,9 @@ let mineCount = 10;
 let grid = [];
 const boardElement = document.getElementById('board');
 const difficultySelect = document.getElementById('difficulty');
+const timerElement = document.getElementById('timer');
+let startTime = null;
+let timerInterval = null;
 difficultySelect === null || difficultySelect === void 0 ? void 0 : difficultySelect.addEventListener('change', () => {
     switch (difficultySelect.value) {
         case 'easy':
@@ -26,6 +29,13 @@ function init() {
     grid = [];
     boardElement.innerHTML = '';
     boardElement.style.gridTemplateColumns = `repeat(${gridSize}, 30px)`;
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    startTime = null;
+    if (timerElement)
+        timerElement.textContent = 'Zeit: 0s';
     for (let y = 0; y < gridSize; y++) {
         const row = [];
         for (let x = 0; x < gridSize; x++) {
@@ -83,12 +93,15 @@ function reveal(x, y) {
     const cell = grid[y][x];
     if (cell.revealed || cell.flagged)
         return;
+    if (startTime === null)
+        startTimer();
     cell.revealed = true;
     cell.element.classList.add('revealed');
     if (cell.hasMine) {
         cell.element.classList.add('mine');
         alert('Game Over!');
         revealAll();
+        stopTimer();
         return;
     }
     if (cell.adjacentMines > 0) {
@@ -106,6 +119,10 @@ function reveal(x, y) {
                 }
             }
         }
+    }
+    if (checkWin()) {
+        stopTimer();
+        alert('Geschafft!');
     }
 }
 function revealAll() {
@@ -131,6 +148,34 @@ function toggleFlag(x, y) {
         return;
     cell.flagged = !cell.flagged;
     cell.element.classList.toggle('flagged');
+}
+function startTimer() {
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+        if (timerElement && startTime !== null) {
+            const seconds = Math.floor((Date.now() - startTime) / 1000);
+            timerElement.textContent = `Zeit: ${seconds}s`;
+        }
+    }, 1000);
+    if (timerElement)
+        timerElement.textContent = 'Zeit: 0s';
+}
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+function checkWin() {
+    for (let y = 0; y < gridSize; y++) {
+        for (let x = 0; x < gridSize; x++) {
+            const cell = grid[y][x];
+            if (!cell.hasMine && !cell.revealed) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 (_a = document.getElementById('reset')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => init());
 init();

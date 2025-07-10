@@ -3,6 +3,10 @@ body {
   padding: 20px;
 }
 
+#timer {
+  margin-bottom: 10px;
+}
+
 #board {
   display: grid;
   gap: 2px;
